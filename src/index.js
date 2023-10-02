@@ -3,6 +3,18 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
+const refs = {
+  searchForm: document.querySelector('.search-form'),
+  galleryContainer: document.querySelector('.gallery'),
+  loadMoreBtn: document.querySelector('.load-more'),
+};
+
+refs.searchForm.addEventListener('submit', onSearch);
+refs.loadMoreBtn.addEventListener('click', onLoadMore);
+
+refs.loadMoreBtn.classList.add('is-hidden');
+
+
 let lightbox = new SimpleLightbox('.photo-card a', {
   captions: true,
   captionsData: 'alt',
@@ -34,7 +46,7 @@ class NewsApiService {
 
       const data = response.data;
 
-      this.incrementPage();
+      
       return data;
     } catch (error) {
       console.error(error);
@@ -61,16 +73,11 @@ class NewsApiService {
     this.searchQuery = newQuery;
   }
 }
-const refs = {
-  searchForm: document.querySelector('.search-form'),
-  galleryContainer: document.querySelector('.gallery'),
-  loadMoreBtn: document.querySelector('.load-more'),
-};
+
 let isShown = 0;
 const newsApiService = new NewsApiService();
 
-refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onLoadMore);
+
 
 const options = {
   rootMargin: '50px',
@@ -79,23 +86,7 @@ const options = {
 };
 const observer = new IntersectionObserver(onLoadMore, options);
 
-function onSearch(element) {
-  element.preventDefault();
 
-  refs.galleryContainer.innerHTML = '';
-  newsApiService.query =
-    element.currentTarget.elements.searchQuery.value.trim();
-  newsApiService.resetPage();
-
-  if (newsApiService.query === '') {
-    Notify.warning('Please, fill the main field');
-    return;
-  }
-
-  isShown = 0;
-  fetchGallery();
-  onRenderGallery(hits);
-}
 
 function onLoadMore() {
   newsApiService.incrementPage();
@@ -107,6 +98,7 @@ async function fetchGallery() {
 
   const result = await newsApiService.fetchGallery();
   const { hits, total } = result;
+  console.log(total);
   isShown += hits.length;
 
   if (!hits.length) {
@@ -128,6 +120,23 @@ async function fetchGallery() {
   if (isShown >= total) {
     Notify.info("We're sorry, but you've reached the end of search results.");
   }
+}
+function onSearch(element) {
+  element.preventDefault();
+
+  refs.galleryContainer.innerHTML = '';
+  newsApiService.query =
+    element.currentTarget.elements.searchQuery.value.trim();
+  newsApiService.resetPage();
+
+  if (newsApiService.query === '') {
+    refs.loadMoreBtn.classList.add('is-hidden');
+    Notify.warning('Please, fill the main field');
+    return;
+  }
+
+  isShown = 0;
+  fetchGallery();
 }
 
 function onRenderGallery(elements) {
