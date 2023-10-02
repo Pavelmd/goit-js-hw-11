@@ -1,13 +1,8 @@
 import NewsApiService from './js/news-api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import { lightbox } from './js/light-box';
+import { refs } from './js/refs';
 
-const refs = {
-  searchForm: document.querySelector('.search-form'),
-  galleryContainer: document.querySelector('.gallery'),
-  loadMoreBtn: document.querySelector('.load-more'),
-};
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
@@ -15,11 +10,7 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore);
 refs.loadMoreBtn.classList.add('is-hidden');
 
 
-let lightbox = new SimpleLightbox('.photo-card a', {
-  captions: true,
-  captionsData: 'alt',
-  captionDelay: 250,
-});
+
 
 
 
