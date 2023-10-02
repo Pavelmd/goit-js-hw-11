@@ -100,6 +100,7 @@ async function fetchGallery() {
   const { hits, total } = result;
   console.log(total);
   isShown += hits.length;
+  
 
   if (!hits.length) {
     Notify.failure(
@@ -110,7 +111,7 @@ async function fetchGallery() {
   }
 
   onRenderGallery(hits);
-  isShown += hits.length;
+  
 
   if (isShown < total) {
     Notify.success(`Hooray! We found ${total} images !!!`);
@@ -118,6 +119,7 @@ async function fetchGallery() {
   }
 
   if (isShown >= total) {
+    Notify.success(`Hooray! We found ${total} images !!!`);
     Notify.info("We're sorry, but you've reached the end of search results.");
   }
 }
